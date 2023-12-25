@@ -8,6 +8,7 @@ class Lasso_Regression:
         self.model = Lasso(alpha=self.alpha)
         self.coef = None
         self.intercept = None
+        self.description = "Lasso Regression model: the same as Linear Regression but the loss function was added with the regularization terms which are the absolute summation of params of the hyperplane function"
     
     def fit(self, X):
         params = dict()
@@ -18,6 +19,10 @@ class Lasso_Regression:
         params['coef'] = self.coef
         return params
     
+    def __repr__(self):
+        pass
+
+
     def metrics(self, X, y):
         metrics = dict()
         y_pred = self.model.predict(X)

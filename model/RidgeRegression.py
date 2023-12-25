@@ -28,6 +28,14 @@ class RidgeRegression:
         self.name = "Ridge Regression"
         self.coef = None
         self.intercept = None
+        self.description = "Ridge Regression model: The formula is the same as Linear Regression model but the loss function is added with a regularization term to prevent overfitting and high variance. The loss function is: MSE + alpha * (sum of square of coefficients) alpha is a hyperparameter that controls the strength of regularization."
+
+    def __repr__(self):
+        pass
+
+
+
+
 
     def fit(self, X, y):
         params = dict()

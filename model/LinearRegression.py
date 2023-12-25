@@ -19,6 +19,9 @@ class Linear_Regression:
         params['coef'] = self.coef
         return params
     
+    def __repr__(self):
+        print("Test")
+    
     def metrics(self, X, y):
         metrics = dict()
         y_pred = self.model.predict(X)
