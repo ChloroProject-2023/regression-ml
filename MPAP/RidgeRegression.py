@@ -26,9 +26,10 @@ class RidgeRegression:
     """
 
 
-    def __init__(self, alpha=1) -> None:
+    def __init__(self, alpha=1, dimension=3) -> None:
         self.name = "Ridge Regression"
         self.description = "Ridge Regression model: The formula is the same as Linear Regression model but the loss function is added with a regularization term to prevent overfitting and high variance. The loss function is: MSE + alpha * (sum of square of coefficients) alpha is a hyperparameter that controls the strength of regularization."
+        self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
 
         self.model_N = Ridge(alpha=alpha)
         self.model_P = Ridge(alpha=alpha)
@@ -36,6 +37,12 @@ class RidgeRegression:
 
         self.params = {}
         self.met = {}
+
+        if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
+            os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
+        self.full_path = os.path.join(os.getcwd(), user, 'Result')
+        self.train_data_path = 'merged.csv'
+        self.split_ratio = 0.2
 
 
     def __repr__(self):
@@ -103,9 +110,25 @@ class RidgeRegression:
         return N_pred, P_pred, K_pred
 
 
-
-
     def write_to_json(self, path):
+        # convert all attributes to list
+        for key, value in self.params.items():
+            if isinstance(value, np.ndarray):
+                self.params[key] = value.tolist()
+            else:
+                self.params[key] = value
+        for key, value in self.met.items():
+            if isinstance(value, np.ndarray):
+                self.met[key] = value.tolist()
+            else:
+                self.met[key] = value
+                
+        for key, value in self.__dict__.items():
+            if isinstance(value, np.ndarray):
+                self.__dict__[key] = value.tolist()
+            else:
+                self.__dict__[key] = value
+                
         filename = self.name + str(self.dimesion) + '.json'
         fullpath = os.path.join(path, filename)
         dict = {
@@ -115,8 +138,18 @@ class RidgeRegression:
             "params": self.params,
             "filepath": fullpath
         }
+                
         with open(fullpath, 'w') as f:
-            json.dump(dict, f)
+            json.dump(dict, f, indent=4)
+        return fullpath.replace('\\', '/')
+
+    # This function will automatically run and save the model to the path
+    def run(self, X_train, y_train, X_test, y_test, dimension):
+        self.train(X_train, y_train)
+        self.metrics(X_test, y_test)
+        self.dimesion = dimension 
+        fullpath = self.write_to_json(self.full_path)
+        return fullpath
     
 
     

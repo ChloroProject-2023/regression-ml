@@ -9,13 +9,20 @@ class BayesianRidgeRegression:
     def __init__(self, dimension=3) -> None:
         self.name = "BayesianRidge"
         self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D  
+
         self.model_N = BayesianRidge()
         self.model_P = BayesianRidge()
         self.model_K = BayesianRidge()  
+
         self.params = {}
         self.met = {}
         self.description = "Bayesian Ridge Regression model: the same as Linear Regression but the loss function was added with the regularization terms which are the absolute summation of params of the hyperplane function"
-        # self.path = "./Results/"
+        
+        if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
+            os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
+        self.full_path = os.path.join(os.getcwd(), user, 'Result')
+        self.train_data_path = 'merged.csv'
+        self.split_ratio = 0.2
 
     def __repr__(self):
         return self.description
@@ -35,6 +42,7 @@ class BayesianRidgeRegression:
             "params_P": self.params_P,
             "params_K": self.params_K,
         }
+        
 
 
     def join_params(self, coef, intercept):
@@ -84,6 +92,24 @@ class BayesianRidgeRegression:
 
     
     def write_to_json(self, path):
+        # convert all attributes to list
+        for key, value in self.params.items():
+            if isinstance(value, np.ndarray):
+                self.params[key] = value.tolist()
+            else:
+                self.params[key] = value
+        for key, value in self.met.items():
+            if isinstance(value, np.ndarray):
+                self.met[key] = value.tolist()
+            else:
+                self.met[key] = value
+                
+        for key, value in self.__dict__.items():
+            if isinstance(value, np.ndarray):
+                self.__dict__[key] = value.tolist()
+            else:
+                self.__dict__[key] = value
+                
         filename = self.name + str(self.dimesion) + '.json'
         fullpath = os.path.join(path, filename)
         dict = {
@@ -93,8 +119,18 @@ class BayesianRidgeRegression:
             "params": self.params,
             "filepath": fullpath
         }
+                
         with open(fullpath, 'w') as f:
-            json.dump(dict, f)
+            json.dump(dict, f, indent=4)
+        return fullpath.replace('\\', '/')
+
+    # This function will automatically run and save the model to the path
+    def run(self, X_train, y_train, X_test, y_test, dimension):
+        self.train(X_train, y_train)
+        self.metrics(X_test, y_test)
+        self.dimesion = dimension 
+        fullpath = self.write_to_json(self.full_path)
+        return fullpath
             
 
 
