@@ -7,14 +7,14 @@ import json
 # path = "./Results/"
 
 class RFRegression:
-    def __init__(self, dimension=3, min_samples_leaf = 3) -> None:
+    def __init__(self, user, dimension=3, min_samples_leaf = 3) -> None:
         self.name = "Random Forest Regression"
         self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
         self.description = "Random Forest Regression model: An ensemble method using a bundle of Decision Trees to determine the output based on them"
-        
-        self.model_N = RandomForestRegressor(n_estimators = 50, random_state = 42, bootstrap=True, min_samples_leaf=3)
-        self.model_P = RandomForestRegressor(n_estimators = 50, random_state = 42, bootstrap=True, min_samples_leaf=3)
-        self.model_K = RandomForestRegressor(n_estimators = 50, random_state = 42, bootstrap=True, min_samples_leaf=3)
+        self.min_samples_leaf = min_samples_leaf
+        self.model_N = RandomForestRegressor(n_estimators = 50, random_state = 42, bootstrap=True, min_samples_leaf=self.min_samples_leaf)
+        self.model_P = RandomForestRegressor(n_estimators = 50, random_state = 42, bootstrap=True, min_samples_leaf=self.min_samples_leaf)
+        self.model_K = RandomForestRegressor(n_estimators = 50, random_state = 42, bootstrap=True, min_samples_leaf=self.min_samples_leaf)
 
         self.met = {}
 
@@ -57,7 +57,7 @@ class RFRegression:
         pass
 
     def predictNPK(self, X):
-        
+
         N_pred = self.model_N.predict(X)
         P_pred = self.model_P.predict(X)
         K_pred = self.model_K.predict(X)

@@ -7,7 +7,7 @@ import os
 path = "./Results/"
 
 class LassoRegression:
-    def __init__(self, alpha=1, dimension=3) -> None:
+    def __init__(self, user, alpha=1) -> None:
         self.alpha = alpha
         self.model_N = Lasso(alpha=self.alpha)
         self.model_P = Lasso(alpha=self.alpha)
@@ -17,7 +17,7 @@ class LassoRegression:
         self.met = {}
         self.description = "Lasso Regression model: the same as Linear Regression but the loss function was added with the regularization terms which are the absolute summation of params of the hyperplane function"
         self.name = "Lasso"
-        self.dimension = dimension # dimension of the input data: pca 3, 5, or 7D, default is 3D
+        # self.dimension = dimension # dimension of the input data: pca 3, 5, or 7D, default is 3D
 
         if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
             os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
@@ -128,7 +128,7 @@ class LassoRegression:
         return fullpath.replace('\\', '/')
 
     # This function will automatically run and save the model to the path
-    def run(self, X_train, y_train, X_test, y_test, dimension):
+    def run(self, X_train, y_train, X_test, y_test, dimension=3):
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
         self.dimesion = dimension 

@@ -6,9 +6,9 @@ import os
 
 path = "./Results/"
 class BayesianRidgeRegression:
-    def __init__(self, dimension=3) -> None:
+    def __init__(self, user) -> None:
         self.name = "BayesianRidge"
-        self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D  
+        # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D  
 
         self.model_N = BayesianRidge()
         self.model_P = BayesianRidge()
@@ -125,7 +125,7 @@ class BayesianRidgeRegression:
         return fullpath.replace('\\', '/')
 
     # This function will automatically run and save the model to the path
-    def run(self, X_train, y_train, X_test, y_test, dimension):
+    def run(self, X_train, y_train, X_test, y_test, dimension=3):
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
         self.dimesion = dimension 

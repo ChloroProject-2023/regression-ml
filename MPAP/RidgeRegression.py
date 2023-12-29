@@ -26,10 +26,10 @@ class RidgeRegression:
     """
 
 
-    def __init__(self, alpha=1, dimension=3) -> None:
+    def __init__(self, user, alpha=1) -> None:
         self.name = "Ridge Regression"
         self.description = "Ridge Regression model: The formula is the same as Linear Regression model but the loss function is added with a regularization term to prevent overfitting and high variance. The loss function is: MSE + alpha * (sum of square of coefficients) alpha is a hyperparameter that controls the strength of regularization."
-        self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
+        # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
 
         self.model_N = Ridge(alpha=alpha)
         self.model_P = Ridge(alpha=alpha)
@@ -144,7 +144,7 @@ class RidgeRegression:
         return fullpath.replace('\\', '/')
 
     # This function will automatically run and save the model to the path
-    def run(self, X_train, y_train, X_test, y_test, dimension):
+    def run(self, X_train, y_train, X_test, y_test, dimension=3):
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
         self.dimesion = dimension 

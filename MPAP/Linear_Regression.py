@@ -8,9 +8,9 @@ import json
 
 
 class Linear_Regression:
-    def __init__(self, dimension=3) -> None:
+    def __init__(self, user) -> None:
         self.name = "Linear Regression"
-        self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D
+        # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D
         self.description = "Linear Regression model: a model that fits the data with a hyperplane function"
 
         self.model_N = LinearRegression()
@@ -128,7 +128,7 @@ class Linear_Regression:
         return fullpath.replace('\\', '/')
 
     # This function will automatically run and save the model to the path
-    def run(self, X_train, y_train, X_test, y_test, dimension):
+    def run(self, X_train, y_train, X_test, y_test, dimension=3):
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
         self.dimesion = dimension 
