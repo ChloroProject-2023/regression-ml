@@ -6,7 +6,7 @@ import os
 
 path = "./Results/"
 
-class Lasso_Regression:
+class LassoRegression:
     def __init__(self, alpha=1, dimension=3) -> None:
         self.alpha = alpha
         self.model_N = Lasso(alpha=self.alpha)
