@@ -25,7 +25,7 @@ def run_model(model_name, user):
 
     # Assuming the class name in LinearRegression.py is LinearRegressionModel
     # Replace 'LinearRegressionModel' with the actual class name if it's different
-    model_class = getattr(module, 'Linear_Regression')
+    model_class = getattr(module, str(model_name))
     model = model_class(user)
 
     # Assuming the model has an attribute 'train_data_path' specifying the data file name
@@ -48,7 +48,7 @@ def run_model(model_name, user):
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=model.split_ratio, random_state=42)
     # Run the model (assuming the model has a method named 'run')
-    result = model.run(X_train, y_train, X_test, y_test, f'./{user}/Result/', ndim)
+    result = model.run(X_train, y_train, X_test, y_test, ndim)
     
    # Convert Numpy arrays in 'result' to lists before returning
     if isinstance(result, np.ndarray):
