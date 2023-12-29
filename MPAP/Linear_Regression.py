@@ -31,13 +31,13 @@ class Linear_Regression:
     
 
     def train(self, X, y):
-        self.model_N.fit(X, y[:, 0])
+        self.model_N.fit(X, y['N conc. (mg/kg)'])
         self.params_N = self.join_params(self.model_N.coef_, self.model_N.intercept_)
 
-        self.model_P.fit(X, y[:, 1])
+        self.model_P.fit(X, y['P conc. (mg/kg)'])
         self.params_P = self.join_params(self.model_P.coef_, self.model_P.intercept_)
 
-        self.model_K.fit(X, y[:, 2])
+        self.model_K.fit(X, y['K conc. (mg/kg)'])
         self.params_K = self.join_params(self.model_K.coef_, self.model_K.intercept_)
 
         self.params = {
@@ -47,7 +47,8 @@ class Linear_Regression:
         }
 
     def join_params(self, coef, intercept):
-        p = np.concatenate((intercept, coef), axis=1)
+        inter = np.array([intercept])
+        p = np.concatenate((inter, coef), axis=1)
         return p
     
     
@@ -57,14 +58,14 @@ class Linear_Regression:
         y_pred_P = self.model_P.predict(X)
         y_pred_K = self.model_K.predict(X)
 
-        mse_N = mean_squared_error(y[:, 0], y_pred_N)
-        mse_P = mean_squared_error(y[:, 1], y_pred_P)
-        mse_K = mean_squared_error(y[:, 2], y_pred_K)
+        mse_N = mean_squared_error(y['N conc. (mg/kg)'], y_pred_N)
+        mse_P = mean_squared_error(y['P conc. (mg/kg)'], y_pred_P)
+        mse_K = mean_squared_error(y['K conc. (mg/kg)'], y_pred_K)
         average_mse = (mse_N + mse_P + mse_K) / 3
 
-        r2_N = r2_score(y[:, 0], y_pred_N)
-        r2_P = r2_score(y[:, 1], y_pred_P)
-        r2_K = r2_score(y[:, 2], y_pred_K)
+        r2_N = r2_score(y['N conc. (mg/kg)'], y_pred_N)
+        r2_P = r2_score(y['P conc. (mg/kg)'], y_pred_P)
+        r2_K = r2_score(y['K conc. (mg/kg)'], y_pred_K)
         average_r2 = (r2_N + r2_P + r2_K) / 3
         
         self.met['mse'] = average_mse
@@ -131,6 +132,7 @@ class Linear_Regression:
     def run(self, X_train, y_train, X_test, y_test, dimension=3):
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
+
         self.dimesion = dimension 
         fullpath = self.write_to_json(self.full_path)
         return fullpath
