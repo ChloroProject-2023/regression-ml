@@ -9,7 +9,7 @@ import json
 
 class Linear_Regression:
     def __init__(self, user) -> None:
-        self.name = "Linear Regression"
+        self.name = "Linear_Regression"
         # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D
         self.description = "Linear Regression model: a model that fits the data with a hyperplane function"
 
@@ -20,9 +20,9 @@ class Linear_Regression:
         self.params = {}
         self.met = {}
 
-        if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
-            os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
-        self.full_path = os.path.join(os.getcwd(), user, 'Result')
+        # if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
+        #     os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
+        # self.full_path = os.path.join(os.getcwd(), user, 'Result')
         self.train_data_path = 'merged.csv'
         self.split_ratio = 0.2
 
@@ -78,6 +78,7 @@ class Linear_Regression:
         X_new = np.concatenate((bias, X), axis=1)
 
         coef_new = []
+        params = np.array([params])
         for i in range(params.shape[1]):
             coef_new.append(params[0][i])
 
@@ -129,12 +130,12 @@ class Linear_Regression:
         return fullpath.replace('\\', '/')
 
     # This function will automatically run and save the model to the path
-    def run(self, X_train, y_train, X_test, y_test, dimension=3):
+    def run(self, X_train, y_train, X_test, y_test, path=None, dimension=3):
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
 
         self.dimesion = dimension 
-        fullpath = self.write_to_json(self.full_path)
+        fullpath = self.write_to_json(path)
         return fullpath
 
 

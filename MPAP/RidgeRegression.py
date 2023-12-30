@@ -27,7 +27,7 @@ class RidgeRegression:
 
 
     def __init__(self, user, alpha=1) -> None:
-        self.name = "Ridge Regression"
+        self.name = "RidgeRegression"
         self.description = "Ridge Regression model: The formula is the same as Linear Regression model but the loss function is added with a regularization term to prevent overfitting and high variance. The loss function is: MSE + alpha * (sum of square of coefficients) alpha is a hyperparameter that controls the strength of regularization."
         # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
 
@@ -67,7 +67,7 @@ class RidgeRegression:
         
     def join_params(self, coef, intercept):
         inter = np.array([intercept])
-        p = np.concatenate((inter, coef), axis=1)
+        p = np.concatenate((inter, coef))
         return p
 
     def metrics(self, X, y):
