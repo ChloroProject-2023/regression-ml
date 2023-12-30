@@ -48,7 +48,7 @@ class Linear_Regression:
 
     def join_params(self, coef, intercept):
         inter = np.array([intercept])
-        p = np.concatenate((inter, coef), axis=1)
+        p = np.concatenate((inter, coef))
         return p
     
     

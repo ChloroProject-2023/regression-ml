@@ -92,7 +92,7 @@ class RidgeRegression:
     def inference(self, X, params):         # params: a 2D array of shape (1, N) with N = no_features + 1
         n = X.shape[0]
         bias = np.ones((n, 1))
-        X_new = np.concatenate((bias, X), axis=1)
+        X_new = np.concatenate((bias, X))
 
         coef_new = []
         for i in range(params.shape[1]):
