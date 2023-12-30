@@ -79,7 +79,7 @@ predictions.
 
 ### Training and Evaluating a Model
 
-To train and evaluate a model for a user named 'john_doe' using the Linear Regression model with 3 PCA dimensions, send a GET request to the following endpoint:
+To train and evaluate a model for a user named 'MPAP' using the Linear Regression model with 3 PCA dimensions, send a GET request to the following endpoint:
 
 **Request:**
 
