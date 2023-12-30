@@ -1,53 +1,31 @@
 import numpy as np
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import BayesianRidge
 from sklearn.metrics import mean_squared_error, r2_score
-import os
 import json
+import os
 
 path = "./Results/"
+class BayesianRidgeRegression:
+    def __init__(self, user) -> None:
+        self.name = "BayesianRidge"
+        # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D  
 
-
-class RidgeRegression:
-    """
-    Ridge Regression model:
-    The formula is the same as Linear Regression model but the loss function is added
-    with a regularization term to prevent overfitting and high variance.
-    The loss function is: MSE + alpha * (sum of square of coefficients)
-    alpha is a hyperparameter that controls the strength of regularization.
-
-    params:
-    alpha: float, default=1
-        Strength of regularization
-
-    methods:
-    fit(X, y): fit the model with training data
-    metrics(X, y): calculate metrics of the model (MSE, R2)
-    inference(X): predict the output of the model with input X
-    """
-
-
-    def __init__(self, user, alpha=1) -> None:
-        self.name = "Ridge Regression"
-        self.description = "Ridge Regression model: The formula is the same as Linear Regression model but the loss function is added with a regularization term to prevent overfitting and high variance. The loss function is: MSE + alpha * (sum of square of coefficients) alpha is a hyperparameter that controls the strength of regularization."
-        # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
-
-        self.model_N = Ridge(alpha=alpha)
-        self.model_P = Ridge(alpha=alpha)
-        self.model_K = Ridge(alpha=alpha)
+        self.model_N = BayesianRidge()
+        self.model_P = BayesianRidge()
+        self.model_K = BayesianRidge()  
 
         self.params = {}
         self.met = {}
-
+        self.description = "Bayesian Ridge Regression model: the same as Linear Regression but the loss function was added with the regularization terms which are the absolute summation of params of the hyperplane function"
+        
         if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
             os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
         self.full_path = os.path.join(os.getcwd(), user, 'Result')
         self.train_data_path = 'merged.csv'
         self.split_ratio = 0.2
 
-
     def __repr__(self):
         return self.description
-
 
     def train(self, X, y):
         self.model_N.fit(X, y['N conc. (mg/kg)'])
@@ -65,9 +43,11 @@ class RidgeRegression:
             "params_K": self.params_K,
         }
         
+
+
     def join_params(self, coef, intercept):
         inter = np.array([intercept])
-        p = np.concatenate((inter, coef), axis=1)
+        p = np.concatenate((inter, coef))
         return p
 
     def metrics(self, X, y):
@@ -92,7 +72,7 @@ class RidgeRegression:
     def inference(self, X, params):         # params: a 2D array of shape (1, N) with N = no_features + 1
         n = X.shape[0]
         bias = np.ones((n, 1))
-        X_new = np.concatenate((bias, X))
+        X_new = np.concatenate((bias, X), axis=1)
 
         coef_new = []
         for i in range(params.shape[1]):
@@ -111,6 +91,7 @@ class RidgeRegression:
         return N_pred, P_pred, K_pred
 
 
+    
     def write_to_json(self, path):
         # convert all attributes to list
         for key, value in self.params.items():
@@ -151,6 +132,6 @@ class RidgeRegression:
         self.dimesion = dimension 
         fullpath = self.write_to_json(self.full_path)
         return fullpath
-    
+            
 
-    
+

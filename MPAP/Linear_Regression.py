@@ -1,39 +1,21 @@
 import numpy as np
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 import os
 import json
 
-path = "./Results/"
+# path = "./Results/"
 
 
-class RidgeRegression:
-    """
-    Ridge Regression model:
-    The formula is the same as Linear Regression model but the loss function is added
-    with a regularization term to prevent overfitting and high variance.
-    The loss function is: MSE + alpha * (sum of square of coefficients)
-    alpha is a hyperparameter that controls the strength of regularization.
+class Linear_Regression:
+    def __init__(self, user) -> None:
+        self.name = "Linear Regression"
+        # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D
+        self.description = "Linear Regression model: a model that fits the data with a hyperplane function"
 
-    params:
-    alpha: float, default=1
-        Strength of regularization
-
-    methods:
-    fit(X, y): fit the model with training data
-    metrics(X, y): calculate metrics of the model (MSE, R2)
-    inference(X): predict the output of the model with input X
-    """
-
-
-    def __init__(self, user, alpha=1) -> None:
-        self.name = "Ridge Regression"
-        self.description = "Ridge Regression model: The formula is the same as Linear Regression model but the loss function is added with a regularization term to prevent overfitting and high variance. The loss function is: MSE + alpha * (sum of square of coefficients) alpha is a hyperparameter that controls the strength of regularization."
-        # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
-
-        self.model_N = Ridge(alpha=alpha)
-        self.model_P = Ridge(alpha=alpha)
-        self.model_K = Ridge(alpha=alpha)
+        self.model_N = LinearRegression()
+        self.model_P = LinearRegression()
+        self.model_K = LinearRegression()
 
         self.params = {}
         self.met = {}
@@ -44,10 +26,9 @@ class RidgeRegression:
         self.train_data_path = 'merged.csv'
         self.split_ratio = 0.2
 
-
     def __repr__(self):
-        return self.description
-
+            return self.description
+    
 
     def train(self, X, y):
         self.model_N.fit(X, y['N conc. (mg/kg)'])
@@ -64,13 +45,15 @@ class RidgeRegression:
             "params_P": self.params_P,
             "params_K": self.params_K,
         }
-        
+
     def join_params(self, coef, intercept):
         inter = np.array([intercept])
-        p = np.concatenate((inter, coef), axis=1)
+        p = np.concatenate((inter, coef))
         return p
-
-    def metrics(self, X, y):
+    
+    
+    
+    def metrics(self, X, y):                    # X: input data, y: output data (3D array containing N, P, K values)
         y_pred_N = self.model_N.predict(X)
         y_pred_P = self.model_P.predict(X)
         y_pred_K = self.model_K.predict(X)
@@ -88,11 +71,11 @@ class RidgeRegression:
         self.met['mse'] = average_mse
         self.met['r2'] = average_r2
         return self.met
-
+    
     def inference(self, X, params):         # params: a 2D array of shape (1, N) with N = no_features + 1
         n = X.shape[0]
         bias = np.ones((n, 1))
-        X_new = np.concatenate((bias, X))
+        X_new = np.concatenate((bias, X), axis=1)
 
         coef_new = []
         for i in range(params.shape[1]):
@@ -109,8 +92,9 @@ class RidgeRegression:
         P_pred = self.inference(X, self.params_P)
         K_pred = self.inference(X, self.params_K)
         return N_pred, P_pred, K_pred
-
-
+    
+    
+    
     def write_to_json(self, path):
         # convert all attributes to list
         for key, value in self.params.items():
@@ -148,9 +132,9 @@ class RidgeRegression:
     def run(self, X_train, y_train, X_test, y_test, dimension=3):
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
+
         self.dimesion = dimension 
         fullpath = self.write_to_json(self.full_path)
         return fullpath
-    
 
-    
+
