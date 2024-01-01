@@ -108,7 +108,7 @@ def inference(model_name, user):
     # Assuming the class name in LinearRegression.py is LinearRegressionModel
     # Replace 'LinearRegressionModel' with the actual class name if it's different
     model_class = getattr(module, str(model_name))
-    model = model_class(user)
+    model = model_class()
 
     # Assuming the model has an attribute 'train_data_path' specifying the data file name
     data_path = model.train_data_path
@@ -131,7 +131,7 @@ def inference(model_name, user):
            os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=model.split_ratio, random_state=42)
     # Run the model (assuming the model has a method named 'run')
-    model.run(X_train, y_train, X_test, y_test, ndim, os.path.join(os.getcwd(), user_triggered, 'Result'))
+    model.run(X_train, y_train, X_test, y_test, ndim)
     
     result = model.predictNPK(input)
     
