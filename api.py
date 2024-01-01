@@ -8,8 +8,23 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from utils.write_json import write_to_json
 import configparser
+import sys
 
 app = Flask(__name__)
+
+# Add base directory to python path
+cfg = configparser.ConfigParser()
+cfg.read('config.ini')
+base_dir = cfg['DEFAULT']['BASE_DIR']
+if base_dir.startswith('~'):
+    home = os.path.expanduser('~')
+    base_dir = os.path.join(home, base_dir[2:])
+if not os.path.exists(base_dir):
+    os.makedirs(base_dir)
+if base_dir not in sys.path:
+    sys.path.append(base_dir)
+
+print(f"Base directory: {base_dir}")
 
 @app.route('/', methods=['GET'])
 def instructions():
@@ -20,6 +35,9 @@ def instructions():
 @app.route('/model/<user>/<model_name>/run', methods=['GET'])
 def run_model(model_name, user):
     # Construct the import path
+    cfg = configparser.ConfigParser()
+    cfg.read('config.ini')
+    
     ndim = 3
     query = request.args
     user_triggered = user
@@ -41,8 +59,10 @@ def run_model(model_name, user):
     data_path = model.train_data_path
 
     # Read the CSV file from the user's Resources directory
-    data = pd.read_csv(f'./{user}/Resources/{data_path}')
-
+    try:
+        data = pd.read_csv(os.path.join(base_dir, user,'Resources',data_path))
+    except Exception as e:
+        return jsonify({'message': 'error', 'error': str(e)}) , 400, {'ContentType':'application/json'}
     # Assuming 'P conc. (mg/kg)', 'N conc. (mg/kg)', and 'K conc. (mg/kg)' are the target columns
     # And the rest are feature columns
     y = data[["P conc. (mg/kg)", "N conc. (mg/kg)", "K conc. (mg/kg)"]]
@@ -54,13 +74,13 @@ def run_model(model_name, user):
     X  = StandardScaler().fit_transform(X)
     pca = PCA(n_components=ndim)
     X  = pca.fit_transform(X)
-    if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
-           os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
+    if not os.path.exists(os.path.join(base_dir, user, 'Result')):
+           os.makedirs(os.path.join(base_dir, user, 'Result'))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=model.split_ratio, random_state=42)
     # Run the model (assuming the model has a method named 'run')
     model.run(X_train, y_train, X_test, y_test, ndim)
     
-    result = write_to_json(model, os.path.join(os.getcwd(), user_triggered, 'Result'), dimension=ndim)
+    result = write_to_json(model, os.path.join(base_dir, user_triggered, 'Result'), dimension=ndim)
     
    # Convert Numpy arrays in 'result' to lists before returning
     if isinstance(result, np.ndarray):
@@ -79,6 +99,11 @@ def run_model(model_name, user):
 @app.route('/model/<user>/<model_name>/inference', methods=['POST'])
 def inference(model_name, user):
         # Construct the import path
+    cfg = configparser.ConfigParser()
+    cfg.read('config.ini')
+    base_dir = cfg['DEFAULT']['BASE_DIR']
+    if base_dir == '~':
+        base_dir = os.path.expanduser('~')
     ndim = 3
     query = request.args
     user_triggered = user   
@@ -114,8 +139,8 @@ def inference(model_name, user):
     data_path = model.train_data_path
 
     # Read the CSV file from the user's Resources directory
-    data = pd.read_csv(f'./{user}/Resources/{data_path}')
-
+    data = pd.read_csv(os.path.join(base_dir, user,'Resources',data_path))
+    
     # Assuming 'P conc. (mg/kg)', 'N conc. (mg/kg)', and 'K conc. (mg/kg)' are the target columns
     # And the rest are feature columns
     y = data[["P conc. (mg/kg)", "N conc. (mg/kg)", "K conc. (mg/kg)"]]
@@ -127,8 +152,8 @@ def inference(model_name, user):
     X  = StandardScaler().fit_transform(X)
     pca = PCA(n_components=ndim)
     X  = pca.fit_transform(X)
-    if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
-           os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
+    if not os.path.exists(os.path.join(base_dir, user, 'Result')):
+           os.makedirs(os.path.join(base_dir, user, 'Result'))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=model.split_ratio, random_state=42)
     # Run the model (assuming the model has a method named 'run')
     model.run(X_train, y_train, X_test, y_test, ndim)

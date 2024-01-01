@@ -45,6 +45,7 @@ The API server's host and port are configurable via a config.ini file. Create th
 [DEFAULT]
 PORT = 5000
 HOST = 0.0.0.0
+BASE_DIR = ~/GroupProject
 ```
 
 ## Running the API
