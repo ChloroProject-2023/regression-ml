@@ -63,7 +63,7 @@ The API provides several endpoints:
 - **Description**: Trains and evaluates the specified model for a given user.
 - **Query Parameters**:
   - `ndim` (optional): The number of dimensions for PCA.
-  - `user` (optional): Identifier for the user.
+  - `user` (optional): Identifier for the user who will use the model. If not provided, the user who created the model will be used.
 
 ## Model Prediction
 
@@ -73,18 +73,18 @@ The API provides several endpoints:
 predictions.
 - **Body Parameters**:
   - `input`: A list of input features.
-  - `user_id` (optional): Identifier for the user. If not provided, the user who created the model will be used.
+  - `user_id` (optional): Identifier for the user who will use the model. If not provided, the user who created the model will be used.
 
 ## Examples
 
 ### Training and Evaluating a Model
 
-To train and evaluate a model for a user named 'john_doe' using the Linear Regression model with 3 PCA dimensions, send a GET request to the following endpoint:
+To train and evaluate a model for a user id 'MPAP' using the Linear Regression model with 3 PCA dimensions, send a GET request to the following endpoint:
 
 **Request:**
 
 ```http
-GET /model/MPAP/Linear_Regression/run?ndim=3
+GET /model/MPAP/Linear_Regression/run?ndim=3&user=MPAP
 ```
 
 **Response:**
@@ -92,17 +92,17 @@ GET /model/MPAP/Linear_Regression/run?ndim=3
 ```json
 {
     "message": "success",
-    "result" : "path/to/result"
+    "result" : "path/to/base/MPAP/Results/Linear_Regression3.json"
 }
 ```
 
 ### Inference model
-To make predictions using the Linear Regression model for a user named 'MPAP':
+To make predictions using the Linear Regression model for a user id 'MPAP' with 3 PCA dimensions:
 
 **Request:**
 
 ```http
-POST /model/MPAP/Linear_Regression/interference
+POST /model/MPAP/Linear_Regression/inference?ndim=3&user=MPAP
 Content-Type: application/json
 
 {
@@ -110,6 +110,7 @@ Content-Type: application/json
     "user_id": "MPAP"
 }
 ```
+
 **Response:**
 
 ```json
