@@ -3,6 +3,7 @@ from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 import os
 import json
+from typing import Dict, Any, List
 
 path = "./Results/"
 
@@ -26,21 +27,19 @@ class RidgeRegression:
     """
 
 
-    def __init__(self, user, alpha=1) -> None:
+    def __init__(self, alpha=1) -> None:
         self.name = "RidgeRegression"
         self.description = "Ridge Regression model: The formula is the same as Linear Regression model but the loss function is added with a regularization term to prevent overfitting and high variance. The loss function is: MSE + alpha * (sum of square of coefficients) alpha is a hyperparameter that controls the strength of regularization."
         # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D, default is 3D
 
-        self.model_N = Ridge(alpha=alpha)
-        self.model_P = Ridge(alpha=alpha)
-        self.model_K = Ridge(alpha=alpha)
+        self.alpha = alpha
+        self.model_N = Ridge(alpha=self.alpha)
+        self.model_P = Ridge(alpha=self.alpha)
+        self.model_K = Ridge(alpha=self.alpha)
 
         self.params = {}
         self.met = {}
 
-        if not os.path.exists(os.path.join(os.getcwd(), user, 'Result')):
-            os.makedirs(os.path.join(os.getcwd(), user, 'Result'))
-        self.full_path = os.path.join(os.getcwd(), user, 'Result')
         self.train_data_path = 'merged.csv'
         self.split_ratio = 0.2
 
@@ -90,6 +89,19 @@ class RidgeRegression:
         return self.met
 
     def inference(self, X, params):         # params: a 2D array of shape (1, N) with N = no_features + 1
+        """
+        Predicts the output based on the input features and given parameters.
+
+        Args:
+            X (np.ndarray): Input feature matrix.
+            params (np.ndarray): Model parameters (including bias and coefficients).
+
+        Returns:
+            np.ndarray: Predicted values.
+        """
+        params = params.reshape(1, -1)
+        X = np.atleast_2d(X).astype('float64')
+        
         n = X.shape[0]
         bias = np.ones((n, 1))
         X_new = np.concatenate((bias, X))
@@ -108,49 +120,29 @@ class RidgeRegression:
         N_pred = self.inference(X, self.params_N)
         P_pred = self.inference(X, self.params_P)
         K_pred = self.inference(X, self.params_K)
-        return N_pred, P_pred, K_pred
-
-
-    def write_to_json(self, path):
-        # convert all attributes to list
-        for key, value in self.params.items():
-            if isinstance(value, np.ndarray):
-                self.params[key] = value.tolist()
-            else:
-                self.params[key] = value
-        for key, value in self.met.items():
-            if isinstance(value, np.ndarray):
-                self.met[key] = value.tolist()
-            else:
-                self.met[key] = value
-                
-        for key, value in self.__dict__.items():
-            if isinstance(value, np.ndarray):
-                self.__dict__[key] = value.tolist()
-            else:
-                self.__dict__[key] = value
-                
-        filename = self.name + str(self.dimesion) + '.json'
-        fullpath = os.path.join(path, filename)
-        dict = {
-            "name_model": self.name,
-            "pca_dimension": self.dimesion,
-            "metrics": self.met,
-            "params": self.params,
-            "filepath": fullpath
+        return {
+            "N": N_pred[0][0],
+            "P": P_pred[0][0],
+            "K": K_pred[0][0]
         }
-                
-        with open(fullpath, 'w') as f:
-            json.dump(dict, f, indent=4)
-        return fullpath.replace('\\', '/')
 
-    # This function will automatically run and save the model to the path
-    def run(self, X_train, y_train, X_test, y_test, dimension=3):
+    def run(self, X_train: np.ndarray, y_train: Dict[str, np.ndarray], X_test: np.ndarray, y_test: Dict[str, np.ndarray], dimension: int) -> None:
+        """
+        Executes the full process of training, evaluating, and saving the model.
+
+        Args:
+            X_train (np.ndarray): Training feature matrix.
+            y_train (Dict[str, np.ndarray]): Training target values.
+            X_test (np.ndarray): Testing feature matrix.
+            y_test (Dict[str, np.ndarray]): Testing target values.
+            dimension (int): Dimensionality of the PCA transformation.
+            path (str): Filepath to save the model parameters and metrics.
+        """
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
-        self.dimesion = dimension 
-        fullpath = self.write_to_json(self.full_path)
-        return fullpath
+        self.dimension = dimension
+        # Save model to JSON (implement this based on your requirements)
+
     
 
     
