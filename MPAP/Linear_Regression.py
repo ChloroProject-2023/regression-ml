@@ -43,6 +43,7 @@ class Linear_Regression:
             X (np.ndarray): Feature matrix.
             y (Dict[str, np.ndarray]): Target values for N, P, and K concentrations.
         """
+
         self.model_N.fit(X, y['N conc. (mg/kg)'])
         self.params_N = self.join_params(self.model_N.coef_, self.model_N.intercept_)
 
@@ -118,6 +119,7 @@ class Linear_Regression:
         X_new = np.concatenate((bias, X), axis=1)
 
         coef_new = []
+        params = np.array([params])
         for i in range(params.shape[1]):
             coef_new.append(params[0][i])
 
@@ -161,3 +163,4 @@ class Linear_Regression:
         self.metrics(X_test, y_test)
         self.dimension = dimension
         # Save model to JSON (implement this based on your requirements)
+
