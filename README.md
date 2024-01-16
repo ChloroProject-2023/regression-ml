@@ -59,7 +59,7 @@ The API will be available at http://localhost:5000 by default.
 The API provides several endpoints:
 ## Model Training and Evaluation
 
-- **Endpoint**: `/model/<user>/<model_name>/run`
+- **Endpoint**: `/model/<user>/<model_name>/<version>/run`
 - **Method**: `GET`
 - **Description**: Trains and evaluates the specified model for a given user.
 - **Query Parameters**:
@@ -68,16 +68,21 @@ The API provides several endpoints:
 - **path Parameters**:
   - `user`: Identifier for the user who own the model.
   - `model_name`: Name of the model to be trained and evaluated.
+  - `version`: Version of model
 
 ## Model Prediction
 
-- **Endpoint**: `/model/<user>/<model_name>/interference`
+- **Endpoint**: `/model/<user>/<model_name>/<version>/interference`
 - **Method**: `POST`
 - **Description**: Uses the specified model to make 
 predictions.
 - **Body Parameters**:
   - `input`: A list (array) of number which has the same element length match the train dataset.
   - `user_id` (optional): Identifier for the user who will use the model. If not provided, the user who created the model will be used.
+- **Path parameters**:
+  - `user`: Identifier for the user who own the model.
+  - `model_name`: Name of the model to be trained and evaluated.
+  - `version`: Version of model
 
 ## Examples
 
