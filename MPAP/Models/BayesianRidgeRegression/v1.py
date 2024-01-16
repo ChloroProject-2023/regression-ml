@@ -8,7 +8,7 @@ from typing import Dict, Any, List
 path = "./Results/"
 class BayesianRidgeRegression:
     def __init__(self) -> None:
-        self.name: str = "BayesianRidge"
+        self.name: str = "Bayesian Ridge"
         # self.dimesion = dimension  # dimension of the input data: pca 3, 5, or 7D  
 
         self.model_N = BayesianRidge()

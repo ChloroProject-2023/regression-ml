@@ -62,7 +62,7 @@ class ReflectenceService:
         X, y = self.preprocess_data(data, ndim)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=model.split_ratio, random_state=42)
         model.run(X_train, y_train, X_test, y_test, ndim)
-        result = write_to_json(model, os.path.join(self.base_dir, user_triggered, 'Result'), dimension=ndim, version=version)
+        result = write_to_json(model, os.path.join(self.base_dir, user_triggered, 'Result'), dimension=ndim, version=version, name_model=self.model_name)
         return self.format_result(result)
 
     def read_params_from_json(self, filepath):
@@ -78,7 +78,8 @@ class ReflectenceService:
         resource_X = resource_data.drop(columns=["P conc. (mg/kg)", "N conc. (mg/kg)", "K conc. (mg/kg)"])
         resource_X.fillna(resource_X.mean(), inplace=True)
         # Add the input data to the resource data
-        resource_X = resource_X.append(pd.DataFrame(input_data, columns=resource_X.columns))
+        # resource_X = resource_X.append(pd.DataFrame(input_data, columns=resource_X.columns))
+        resource_X = pd.concat([resource_X, pd.DataFrame(input_data, columns=resource_X.columns)], ignore_index=True)
         resource_X = StandardScaler().fit_transform(resource_X)
         pca = PCA(n_components=ndim)
         resource_X = pca.fit_transform(resource_X)
