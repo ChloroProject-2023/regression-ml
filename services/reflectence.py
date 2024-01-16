@@ -78,8 +78,7 @@ class ReflectenceService:
         resource_X = resource_data.drop(columns=["P conc. (mg/kg)", "N conc. (mg/kg)", "K conc. (mg/kg)"])
         resource_X.fillna(resource_X.mean(), inplace=True)
         # Add the input data to the resource data
-        # resource_X = resource_X.append(pd.DataFrame(input_data, columns=resource_X.columns))
-        resource_X = pd.concat([resource_X, pd.DataFrame(input_data, columns=resource_X.columns)], ignore_index=True)
+        resource_X = resource_X.append(pd.DataFrame(input_data, columns=resource_X.columns))
         resource_X = StandardScaler().fit_transform(resource_X)
         pca = PCA(n_components=ndim)
         resource_X = pca.fit_transform(resource_X)
