@@ -1,8 +1,9 @@
 import json
 import os
 import numpy as np
+import re
 
-def write_to_json(self, path, dimension):
+def write_to_json(self, path, dimension, version):
     # convert all attributes to list
     for key, value in self.params.items():
         if isinstance(value, np.ndarray):
@@ -21,7 +22,7 @@ def write_to_json(self, path, dimension):
         else:
             self.__dict__[key] = value
             
-    filename = f'{self.name}_pca_{dimension}.json'
+    filename = f'{self.name}_pca_{dimension}_{version}.json'
     filename = filename.replace(' ', '_')
     fullpath = os.path.join(path, filename)
     dict = {
@@ -31,7 +32,16 @@ def write_to_json(self, path, dimension):
         "params": self.params,
         "filepath": fullpath
     }
-            
+    
+    if os.path.exists(fullpath):
+        suffix = 1
+        while os.path.exists(fullpath):
+            fullpath = os.path.join(path, f'{self.name}_pca_{dimension}_{version}_{suffix}.json')
+            suffix += 1
+        dict['filepath'] = fullpath
+        filename = re.search(r'[^/]+$', fullpath).group(0)
+        dict['name_model'] = filename.replace('.json', '')
+        
     with open(fullpath, 'w') as f:
         json.dump(dict, f, indent=4)
     return fullpath.replace('\\', '/')

@@ -43,7 +43,6 @@ class Linear_Regression:
             X (np.ndarray): Feature matrix.
             y (Dict[str, np.ndarray]): Target values for N, P, and K concentrations.
         """
-
         self.model_N.fit(X, y['N conc. (mg/kg)'])
         self.params_N = self.join_params(self.model_N.coef_, self.model_N.intercept_)
 
@@ -54,9 +53,9 @@ class Linear_Regression:
         self.params_K = self.join_params(self.model_K.coef_, self.model_K.intercept_)
 
         self.params = {
-            "params_N": self.params_N,
-            "params_P": self.params_P,
-            "params_K": self.params_K,
+            "N": self.params_N,
+            "P": self.params_P,
+            "K": self.params_K,
         }
 
     def join_params(self, coef: np.ndarray, intercept: float) -> np.ndarray:
@@ -112,14 +111,13 @@ class Linear_Regression:
         Returns:
             np.ndarray: Predicted values.
         """
-        params = params.reshape(1, -1)
+        params = np.atleast_2d(params).astype('float64')
         X = np.atleast_2d(X).astype('float64')
         n = X.shape[0]
         bias = np.ones((n, 1))
         X_new = np.concatenate((bias, X), axis=1)
 
         coef_new = []
-        params = np.array([params])
         for i in range(params.shape[1]):
             coef_new.append(params[0][i])
 
@@ -162,5 +160,3 @@ class Linear_Regression:
         self.train(X_train, y_train)
         self.metrics(X_test, y_test)
         self.dimension = dimension
-        # Save model to JSON (implement this based on your requirements)
-

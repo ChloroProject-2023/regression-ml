@@ -63,8 +63,11 @@ The API provides several endpoints:
 - **Method**: `GET`
 - **Description**: Trains and evaluates the specified model for a given user.
 - **Query Parameters**:
-  - `ndim` (optional): The number of dimensions for PCA.
+  - `ndim` (optional): The number of dimensions for dimension reduction.
   - `user` (optional): Identifier for the user who will use the model. If not provided, the user who created the model will be used.
+- **path Parameters**:
+  - `user`: Identifier for the user who own the model.
+  - `model_name`: Name of the model to be trained and evaluated.
 
 ## Model Prediction
 
@@ -73,7 +76,7 @@ The API provides several endpoints:
 - **Description**: Uses the specified model to make 
 predictions.
 - **Body Parameters**:
-  - `input`: A list of input features.
+  - `input`: A list (array) of number which has the same element length match the train dataset.
   - `user_id` (optional): Identifier for the user who will use the model. If not provided, the user who created the model will be used.
 
 ## Examples
@@ -94,12 +97,12 @@ GET /model/MPAP/Linear_Regression/run?ndim=3&user=MPAP
 ```json
 {
     "message": "success",
-    "result" : "path/to/base/MPAP/Results/Linear_Regression3.json"
+    "result" : "path/to/base/MPAP/Results/Linear_Regression_pca_3_v1.json"
 }
 ```
 
 ### Inference model
-To make predictions using the Linear Regression model for a user id 'MPAP' with 3 PCA dimensions:
+To make predictions using the Linear Regression model for a user id 'MPAP' with 3 PCA dimensions. The model must be trained and evaluated first.
 
 **Request:**
 
@@ -118,10 +121,14 @@ Content-Type: application/json
 ```json
 {
     "message": "success",
-    "result" : {
-       "N": 1,
-       "P": 1,
-       "K": 1
+    "result": {
+        "K": 40387.50892440533,
+        "N": 3042.7882326102417,
+        "P": 4409.603387604054,
+        "metrics": {
+            "mse": 65467184.53838297,
+            "r2": 0.00751873517956847
+        }
     }
 }
 ```
