@@ -83,6 +83,8 @@ predictions.
   - `user`: Identifier for the user who own the model.
   - `model_name`: Name of the model to be trained and evaluated.
   - `version`: Version of model
+- **Query parameters**:
+  - `ndim` (optional): The number of dimensions for dimension reduction.
 
 ## Examples
 
@@ -116,8 +118,7 @@ POST /model/MPAP/Linear_Regression/inference?ndim=3&user=MPAP
 Content-Type: application/json
 
 {
-    "input": [1, 0.5, 2.5, 1.2 ... 0.5],
-    "user_id": "MPAP"
+    "input": [1, 0.5, 2.5, 1.2 ... 0.5]
 }
 ```
 
