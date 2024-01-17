@@ -62,7 +62,10 @@ class ReflectenceService:
         X, y = self.preprocess_data(data, ndim)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=model.split_ratio, random_state=42)
         model.run(X_train, y_train, X_test, y_test, ndim)
-        result = write_to_json(model, os.path.join(self.base_dir, user_triggered, 'Result'), dimension=ndim, version=version, name_model=self.model_name)
+        w_path = os.path.join(self.base_dir, user_triggered, 'Resources', 'ParamsFiles')
+        if not os.path.exists(w_path):
+            os.makedirs(w_path)
+        result = write_to_json(model, w_path, dimension=ndim, version=version, name_model=self.model_name)
         return self.format_result(result)
 
     def read_params_from_json(self, filepath):
@@ -88,7 +91,7 @@ class ReflectenceService:
         input_data = resource_X[-1]
         
         try:
-            json_filepath = os.path.join(self.base_dir, user_triggered, 'Result', f'{self.model_name}_pca_{ndim}_{version}.json')
+            json_filepath = os.path.join(self.base_dir, user_triggered, 'Resources', 'ParamsFiles', f'{self.model_name}_pca_{ndim}_{version}.json')
             params, metrics = self.read_params_from_json(json_filepath)
         except:
             raise Exception('Pretrained model has not been found')
