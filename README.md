@@ -72,7 +72,7 @@ The API provides several endpoints:
 
 ## Model Prediction
 
-- **Endpoint**: `/model/<user>/<model_name>/<version>/interference`
+- **Endpoint**: `/model/<user>/<model_name>/<version>/inference`
 - **Method**: `POST`
 - **Description**: Uses the specified model to make 
 predictions.
