@@ -39,9 +39,9 @@ class LassoRegression:
         self.params_K = self.join_params(self.model_K.coef_, self.model_K.intercept_)
 
         self.params = {
-            "params_N": self.params_N,
-            "params_P": self.params_P,
-            "params_K": self.params_K,
+            "N": self.params_N,
+            "P": self.params_P,
+            "K": self.params_K,
         }
 
     def join_params(self, coef, intercept):

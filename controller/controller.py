@@ -23,9 +23,9 @@ def run_model(model_name: str, user: str, version: str) -> list:
     try:
         # Run the model using the service
         result = service.run_model(ndim, user_triggered, version)
-        return jsonify({'message': 'success', 'result': result}), 200, {'ContentType': 'application/json'}
+        return jsonify({'message': 'success', 'result': result}), 200, {'Content-Type': 'application/json'}
     except Exception as e:
-        return jsonify({'message': 'error', 'error': str(e)}), 400, {'ContentType': 'application/json'}
+        return jsonify({'message': 'error', 'error': str(e)}), 400, {'Content-Type': 'application/json'}
 
 
 def inference(model_name, user, version):
@@ -43,7 +43,7 @@ def inference(model_name, user, version):
     body = request.get_json()
     query = request.args
     if not body or 'input' not in body:
-        return jsonify({'message': 'error', 'error': 'Missing input'}), 400, {'ContentType': 'application/json'}
+        return jsonify({'message': 'error', 'error': 'Missing input'}), 400, {'Content-Type': 'application/json'}
 
     input_data = body['input']
     ndim = int(query['ndim']) if 'ndim' in query else 1
@@ -55,6 +55,6 @@ def inference(model_name, user, version):
     try:
         # Run inference using the service
         result = service.inference(input_data, ndim, user_triggered, version)
-        return jsonify({'message': 'success', 'result': result}), 200, {'ContentType': 'application/json'}
+        return jsonify({'message': 'success', 'result': result}), 200, {'Content-Type': 'application/json'}
     except Exception as e:
-        return jsonify({'message': 'error', 'error': str(e)}), 400, {'ContentType': 'application/json'}
+        return jsonify({'message': 'error', 'error': str(e)}), 400, {'Content-Type': 'application/json'}
